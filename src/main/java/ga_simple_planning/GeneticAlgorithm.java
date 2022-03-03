@@ -47,7 +47,10 @@ public class GeneticAlgorithm extends MaxFuncAdapter {
     public void conductGA() {
         init();
         for (int i = 0; i < ITER_NUM ; i++) {
+            // 计算种群适应度
             calculateScore();
+            //
+            evolve();
         }
     }
 
