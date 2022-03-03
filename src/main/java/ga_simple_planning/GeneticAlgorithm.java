@@ -52,7 +52,8 @@ public class GeneticAlgorithm extends MaxFuncAdapter {
 
 
     public void conductGA() {
-        init();
+        //init();
+        mockBadPop(); // 初始化烂种群
         for (int i = 0; i < ITER_NUM ; i++) {
             // 计算种群适应度
             calculateScore();
@@ -91,10 +92,18 @@ public class GeneticAlgorithm extends MaxFuncAdapter {
     }
 
     /**
-     *
+     * 生成较坏的父代
      */
     private void mockBadPop() {
-
+        System.out.println("0、初始化坏种群");
+        popCount++;
+        for (int i = 0; i < POP_SIZE; i++) {
+            Chromosome chromosome = new Chromosome(CHROMOSOME_SIZE);
+            boolean[] gene = chromosome.getGene();
+            gene[0]=false;
+            gene[1]=false;
+            pop.add(chromosome);
+        }
     }
 
     /**
