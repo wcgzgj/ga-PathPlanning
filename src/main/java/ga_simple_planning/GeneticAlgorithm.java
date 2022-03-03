@@ -56,13 +56,13 @@ public class GeneticAlgorithm extends MaxFuncAdapter {
         for (int i = 0; i < ITER_NUM ; i++) {
             // 计算种群适应度
             calculateScore();
+            print();
             // 种群遗传
             // - 筛选较优父代（轮盘赌算法）
             // - 交叉运算
             evolve();
             // 种群变异
             mutation();
-            print();
         }
     }
 
@@ -88,6 +88,13 @@ public class GeneticAlgorithm extends MaxFuncAdapter {
         for (int i = 0; i < POP_SIZE; i++) {
             pop.add(new Chromosome(CHROMOSOME_SIZE));
         }
+    }
+
+    /**
+     *
+     */
+    private void mockBadPop() {
+
     }
 
     /**
@@ -122,7 +129,7 @@ public class GeneticAlgorithm extends MaxFuncAdapter {
     private int calculateChromosomeScore(Chromosome chromosome) {
         int x = changeX(chromosome);
         // 借助位运算，获取 x1，x2 的值
-        return changeY(x&56>>>3,x&7);
+        return changeY((x&56)>>3,x&7);
     }
 
     @Override
@@ -193,6 +200,7 @@ public class GeneticAlgorithm extends MaxFuncAdapter {
     private void mutation() {
         for (Chromosome chromosome : pop) {
             if (Math.random()<MUTATION_RATE) {
+                System.out.println("在" + popCount +"代发生了变异！");
                 chromosome.mutation((int) (MAX_MUTATION_NUM*Math.random()));
             }
         }
