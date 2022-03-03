@@ -86,6 +86,17 @@ public class Chromosome implements Codec {
     }
 
     /**
+     * 基因变异
+     * @param mutationNum 变异点个数
+     */
+    public void mutation(int mutationNum) {
+        for (int i = 0; i < mutationNum; i++) {
+            int at =(int) Math.random() * geneSize;
+            gene[at] = !gene[at];
+        }
+    }
+
+    /**
      * 深拷贝当前染色体
      * @param chromosome
      * @return

@@ -49,8 +49,12 @@ public class GeneticAlgorithm extends MaxFuncAdapter {
         for (int i = 0; i < ITER_NUM ; i++) {
             // 计算种群适应度
             calculateScore();
-            //
+            // 种群遗传
+            // - 筛选较优父代（轮盘赌算法）
+            // - 交叉运算
             evolve();
+            // 种群变异
+
         }
     }
 
@@ -119,8 +123,12 @@ public class GeneticAlgorithm extends MaxFuncAdapter {
             Chromosome p2 = getParentChromosome();
             if (p1==null || p2==null) continue;
             List<Chromosome> children = Chromosome.genetic(p1, p2);
-
+            for (Chromosome child : children) {
+                newPop.add(child);
+            }
         }
+        pop.clear();
+        pop=newPop;
     }
 
     /**
