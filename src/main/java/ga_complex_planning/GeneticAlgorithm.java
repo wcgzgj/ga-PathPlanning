@@ -8,4 +8,5 @@ package ga_complex_planning;
  * @Version 1.0
  **/
 public class GeneticAlgorithm {
+
 }
