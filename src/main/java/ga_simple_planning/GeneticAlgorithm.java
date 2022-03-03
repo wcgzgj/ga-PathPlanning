@@ -25,6 +25,10 @@ public class GeneticAlgorithm extends MaxFuncAdapter {
     private int CHROMOSOME_SIZE = Integer.valueOf(pro.getProperty("CHROMOSOME_SIZE"));
     // 迭代次数
     private int ITER_NUM = Integer.valueOf(pro.getProperty("ITER_NUM"));
+    // 个体变异概率
+    private double MUTATION_RATE=Double.valueOf(pro.getProperty("MUTATION_RATE"));
+    // 最大变异长度
+    private int MAX_MUTATION_NUM=Integer.valueOf(pro.getProperty("MAX_MUTATION_NUM"));
 
     // 当前这代种群中的最佳适应度
     private double bestScore = Double.MIN_VALUE;
@@ -34,6 +38,9 @@ public class GeneticAlgorithm extends MaxFuncAdapter {
     private double totalScore = 0;
     // 平均群体适应度（需要注意，因为精度问题，我们要确保平均得分不得超过最好得分）
     private double averageScore = 0;
+
+    // 种群代数目统计
+    private int popCount=0;
 
     private int bestX = 0;
     private int bestY = 0;
@@ -54,14 +61,30 @@ public class GeneticAlgorithm extends MaxFuncAdapter {
             // - 交叉运算
             evolve();
             // 种群变异
-
+            mutation();
+            print();
         }
+    }
+
+    private void print() {
+        System.out.println("当前代数为："+popCount);
+        //System.out.println("当前种群为：");
+        //for (Chromosome chromosome : pop) {
+        //    System.out.println(chromosome);
+        //}
+        System.out.println("最佳适应度为："+bestScore);
+        System.out.println("最坏适应度为："+worstScore);
+        System.out.println("总适应度为："+totalScore);
+        System.out.println("平均适应度为："+averageScore);
+        System.out.println("---------------------------------------");
     }
 
     /**
      * 初始化种群
      */
     private void init() {
+        System.out.println("0、初始化种群");
+        popCount++;
         for (int i = 0; i < POP_SIZE; i++) {
             pop.add(new Chromosome(CHROMOSOME_SIZE));
         }
@@ -129,6 +152,7 @@ public class GeneticAlgorithm extends MaxFuncAdapter {
         }
         pop.clear();
         pop=newPop;
+        popCount++;
     }
 
     /**
@@ -159,6 +183,17 @@ public class GeneticAlgorithm extends MaxFuncAdapter {
                 return pop.stream()
                         .max(Comparator.comparing(Chromosome::getScore))
                         .get();
+            }
+        }
+    }
+
+    /**
+     * 种群染色体发生变异
+     */
+    private void mutation() {
+        for (Chromosome chromosome : pop) {
+            if (Math.random()<MUTATION_RATE) {
+                chromosome.mutation((int) (MAX_MUTATION_NUM*Math.random()));
             }
         }
     }
