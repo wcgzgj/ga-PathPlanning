@@ -9,10 +9,7 @@ package ga_simple_planning;
  **/
 public class SimplePlanningApplication {
     public static void main(String[] args) {
-        //Chromosome chromosome = new Chromosome(6);
-        //System.out.println(chromosome);
-        //System.out.println(chromosome.decoder());
         GeneticAlgorithm ga = new GeneticAlgorithm();
-        System.out.println(ga.getPOP_SIZE());
+        ga.conductGA();
     }
 }

@@ -64,8 +64,8 @@ public class Chromosome implements Codec {
         int geneSize = parent1.geneSize;
         Random random = new Random();
         // 获取随机父代位交换位置
-        int l = random.nextInt(geneSize + 1);
-        int r = random.nextInt(geneSize + 1);
+        int l = random.nextInt(geneSize);
+        int r = random.nextInt(geneSize);
         if (l>r) {
             int tmp = l;
             l=r;
