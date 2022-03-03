@@ -1,6 +1,7 @@
 package ga_simple_planning;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @ClassName Chromosome
@@ -44,6 +45,17 @@ public class Chromosome implements Codec {
             if (gene[i]) sum+=1;
         }
         return String.valueOf(sum);
+    }
+
+    /**
+     * 两个父代进行交叉运算，获取新的两个子代
+     * @param parent1
+     * @param parent2
+     * @return
+     */
+    public static List<Chromosome> genetic(Chromosome parent1, Chromosome parent2) {
+        //if (parent1==null || parent2==null)
+        return null;
     }
 
     /**

@@ -4,6 +4,7 @@ import com.sun.jdi.PrimitiveValue;
 import util.PropertyUtil;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
 
@@ -22,34 +23,53 @@ public class GeneticAlgorithm extends MaxFuncAdapter {
     private int POP_SIZE = Integer.valueOf(pro.getProperty("POP_SIZE"));
     // 基因长短
     private int CHROMOSOME_SIZE = Integer.valueOf(pro.getProperty("CHROMOSOME_SIZE"));
+    // 迭代次数
+    private int ITER_NUM = Integer.valueOf(pro.getProperty("ITER_NUM"));
 
-    // 最佳适应度
+    // 当前这代种群中的最佳适应度
     private double bestScore = Double.MIN_VALUE;
-    // 最坏适应度
+    // 当前这代种群中的最坏适应度
     private double worstScore = Double.MAX_VALUE;
     // 群体适应度得分（这里只限于当前群体）
     private double totalScore = 0;
     // 平均群体适应度（需要注意，因为精度问题，我们要确保平均得分不得超过最好得分）
     private double averageScore = 0;
 
+    private int bestX = 0;
+    private int bestY = 0;
 
 
     public GeneticAlgorithm() {
         pop = new ArrayList<Chromosome>();
-        init();
     }
 
+
+    public void conductGA() {
+        init();
+        for (int i = 0; i < ITER_NUM ; i++) {
+            calculateScore();
+        }
+    }
+
+    /**
+     * 初始化种群
+     */
     private void init() {
         for (int i = 0; i < POP_SIZE; i++) {
             pop.add(new Chromosome(CHROMOSOME_SIZE));
         }
     }
 
+    /**
+     * 计算种群适应度
+     */
     private void calculateScore() {
         if (pop==null || pop.size()==0) {
             pop = new ArrayList<Chromosome>();
             init();
         }
+        bestScore = Double.MIN_VALUE;
+        worstScore = Double.MAX_VALUE;
         // 因为 totalScore 记录的是当前群体适应度总和
         // 所以每次计算适应度之前，都必须清空前一代群体的适应度总和
         totalScore = 0;
@@ -64,6 +84,11 @@ public class GeneticAlgorithm extends MaxFuncAdapter {
         if (averageScore>bestScore) averageScore = bestScore;
     }
 
+    /**
+     * 计算个体适应度
+     * @param chromosome 被计算个体
+     * @return 个体适应度
+     */
     private int calculateChromosomeScore(Chromosome chromosome) {
         int x = changeX(chromosome);
         // 借助位运算，获取 x1，x2 的值
@@ -80,4 +105,53 @@ public class GeneticAlgorithm extends MaxFuncAdapter {
     int changeY(int x1,int x2) {
         return x1*x1 + x2*x2;
     }
+
+    /**
+     * 生成新种群
+     */
+    private void evolve() {
+        List<Chromosome> newPop = new ArrayList<>();
+        while (newPop.size()<POP_SIZE) {
+            Chromosome p1 = getParentChromosome();
+            Chromosome p2 = getParentChromosome();
+            if (p1==null || p2==null) continue;
+            List<Chromosome> children = Chromosome.genetic(p1, p2);
+
+        }
+    }
+
+    /**
+     * 使用轮盘赌法，获取相对较好的父类个体
+     * 这里在选择个体的时候要注意：
+     * 1、个体被选择的概率要遵循轮盘赌法
+     * 2、个体的适应度要大于平均适应度
+     * 轮盘赌法相关文章：https://blog.csdn.net/weixin_44062380/article/details/123255853
+     * @return
+     */
+    private Chromosome getParentChromosome() {
+        if (pop==null || pop.size()==0) return null;
+        int iterCount = 0;
+        while (true) {
+            double slice = totalScore * Math.random();
+            double sum = 0d;
+            for (Chromosome chromosome : pop) {
+                sum+=chromosome.getScore();
+                // 一定要保证个体适应度大于平均适应度
+                if (sum>slice && chromosome.getScore()>averageScore) {
+                    return chromosome;
+                }
+            }
+            iterCount++;
+            // 防止迭代次数过高
+            // 迭代次数超过阈值，返回种群最优个体
+            if (iterCount>400) {
+                return pop.stream()
+                        .max(Comparator.comparing(Chromosome::getScore))
+                        .get();
+            }
+        }
+    }
+
+
+
 }
