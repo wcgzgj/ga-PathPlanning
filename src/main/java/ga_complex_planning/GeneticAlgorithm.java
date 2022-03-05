@@ -1,5 +1,10 @@
 package ga_complex_planning;
 
+import ga_complex_planning.planning_info.Info;
+import ga_complex_planning.pojo.Point;
+
+import java.util.Map;
+
 /**
  * @ClassName GeneticAlgorithm
  * @Description TODO

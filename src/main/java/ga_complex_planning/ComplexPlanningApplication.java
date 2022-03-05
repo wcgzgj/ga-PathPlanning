@@ -1,5 +1,10 @@
 package ga_complex_planning;
 
+import ga_complex_planning.planning_info.Info;
+import ga_complex_planning.pojo.Point;
+
+import java.util.Map;
+
 /**
  * @ClassName SImplePlanningApplication
  * @Description TODO
@@ -9,6 +14,6 @@ package ga_complex_planning;
  **/
 public class ComplexPlanningApplication {
     public static void main(String[] args) {
-
+        Map<String, Point> info = Info.getInfo();
     }
 }

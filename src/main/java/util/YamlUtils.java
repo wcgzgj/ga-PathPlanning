@@ -18,7 +18,7 @@ public class YamlUtils {
 
     static {
         Yaml yaml = new Yaml();
-        properties = yaml.loadAs(YamlUtils.class.getClassLoader().getResourceAsStream("planning_info.yml"),HashMap.class);
+        properties = yaml.loadAs(YamlUtils.class.getClassLoader().getResourceAsStream("planning_info.properties"),HashMap.class);
     }
 
     public static Object getValByKey(String key) {
