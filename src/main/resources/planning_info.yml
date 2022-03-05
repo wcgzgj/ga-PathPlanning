@@ -1,0 +1,53 @@
+# 这个文件用来存储规划所要考虑的信息
+
+#车辆数目
+car_num: 5
+#车辆载重
+car_capacity: 10
+#车辆速度
+car_speed: 5
+
+#受灾点数目
+point_num: 30
+
+# public class Point {
+#   // 受灾点名称
+#    private String name;
+#   // 受灾点坐标
+#   private double x;
+#   private double y;
+#   // 受灾点所需物资
+#   private double need;
+#   // 受灾点服务时间
+#   private double serviceTime;
+#   // 受灾点时间窗
+#   private double start;
+#   private double end;
+# }
+
+#points:
+#  k1:
+#    name: A
+#    x: 100
+#    y: 100
+#    need: 1.5
+#    serviceTime: 0.78
+#    start: 0
+#    end: 7.1
+
+k1:
+  name: A
+  x: 100
+  y: 100
+  need: 1.5
+  serviceTime: 0.78
+  start: 0
+  end: 7.1
+
+
+
+
+
+
+
+

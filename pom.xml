@@ -20,6 +20,12 @@
             <version>4.10</version>
             <scope>test</scope>
         </dependency>
+        <!--        读取 yaml 信息-->
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.23</version>
+        </dependency>
 
     </dependencies>
 

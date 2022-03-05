@@ -8,5 +8,11 @@ package ga_complex_planning;
  * @Version 1.0
  **/
 public class Chromosome {
+    private int[] gene;
+    private int geneSize;
+    private double score;
+
+
+
 
 }
