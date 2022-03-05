@@ -44,6 +44,7 @@ public class Chromosome {
      * 0 3 3 0 1 4 0  (3受灾点重复)
      * 0 0 3 2 1 4 0  (有两个起始点重合->有车子没出发)
      */
+    // TODO: 起始点位置不能是固定的，不然无论怎么交叉，起始点位置都不会改变（单纯靠变异几乎不可能）
     public void init() {
         int remainStartPoints = carNum + 1;
         gene[0]=0;
@@ -81,14 +82,47 @@ public class Chromosome {
 
     /**
      * 判断当前染色体是否符合要求
+     * 1、基因中起始点0个数 为 carNum +1
+     * 2、每个点只能出现一次，且所有点都必须出现
+     * 3、两个起始点不可以相邻
+     * 4、基因收尾必须是起始点位置 0
+     * 这个函数主要是用在交叉后对子代进行判断的
+     * 这里还要注意一点，如果生成的子代不满足条件
+     * 我们不应该重新轮盘赌选择父代，而是重新选择交叉片段的位移
      * @param chromosome
      * @return
      */
-    public boolean isGoodChromosome(Chromosome chromosome) {
+    public static boolean isGoodChromosome(Chromosome chromosome) {
+        // 1、基因不存在
+        if (chromosome==null || chromosome.getGene()==null || chromosome.getGene().length==0) return false;
         int[] gene = chromosome.getGene();
+        List<Integer> genePointList = new ArrayList<>();
         // 基因中目标起始点的个数
-        int targetStartPointNum = carNum + 1;
-        return false;
+        int targetStartPointNum = chromosome.getCarNum() + 1;
+        int startPointCount = 2;
+        if (gene[gene.length-2]==0) return false;
+        for (int i = 1; i < gene.length-1; i++) {
+            if (gene[i]==0 && gene[i-1]==0) {
+                // 2、两个起始点邻接
+                return false;
+            }
+            if (gene[i]==0) {
+                startPointCount++;
+            }
+            else {
+                genePointList.add(gene[i]);
+            }
+        }
+        // 3、起始点个数不满足要求
+        if (startPointCount!=targetStartPointNum) return false;
+        // 4、不满足囊括所有受灾点
+        // 受灾点排布必须满足 n=N 时，为  1,2,...N
+        genePointList.sort((o1, o2) -> o1-o2);
+        if (genePointList.get(0)!=1) return false;
+        for (int i = 1; i <genePointList.size() ; i++) {
+            if (genePointList.get(i)-1!=genePointList.get(i-1)) return false;
+        }
+        return true;
     }
 
 
