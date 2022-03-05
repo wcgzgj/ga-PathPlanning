@@ -44,7 +44,8 @@ public class Chromosome {
      * 0 3 3 0 1 4 0  (3受灾点重复)
      * 0 0 3 2 1 4 0  (有两个起始点重合->有车子没出发)
      */
-    // TODO: 起始点位置不能是固定的，不然无论怎么交叉，起始点位置都不会改变（单纯靠变异几乎不可能）
+    // TODO: 记录生成过程中出现过的不合格的位置，
+    //  以减少 carNum 趋近于 points 时出现的初始化时间越来越长的问题
     public void init() {
         int remainStartPoints = carNum + 1;
         gene[0]=0;
@@ -55,17 +56,19 @@ public class Chromosome {
         for (int i = 1; i <= pointNum ; i++) {
             pointList.add(i);
         }
-        //System.out.println("待选择的受灾点为:"+pointList);
-        // 受灾点之间定义的步长
-
-        int step = (geneSize - 2) / (remainStartPoints + 1);
-        //System.out.println("步长为:"+step);
-        int cursor=1;
-        // 按照既定步长，放置起始点
-        while (remainStartPoints-->0) {
-            cursor+=step;
-            gene[cursor]=0;
+        // 随机生成起始点
+        if (carNum>1 && geneSize>4) {
+            //System.out.println("还需要被放置的起始点个数为:"+remainStartPoints);
+            while (remainStartPoints>0) {
+                // 随机基因起始点
+                int tmpStartIndex = r.nextInt(geneSize - 4) + 2;
+                if (gene[tmpStartIndex]!=0 && gene[tmpStartIndex-1]!=0 && gene[tmpStartIndex+1]!=0) {
+                    gene[tmpStartIndex]=0;
+                    remainStartPoints--;
+                }
+            }
         }
+
         //System.out.println("放置完起始点后的基因为:"+Arrays.toString(gene));
         // 将受灾点坐标，放进基因组中
         for (int i = 0; i < geneSize; i++) {
@@ -79,6 +82,7 @@ public class Chromosome {
             }
         }
     }
+
 
     /**
      * 判断当前染色体是否符合要求

@@ -11,11 +11,12 @@ public class ChromosomeTest {
     @Test
     public void testInit() {
         List<Chromosome> list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 500; i++) {
             list.add(new Chromosome(5,30));
         }
         for (Chromosome chromosome : list) {
             System.out.println(chromosome);
+            System.out.println(Chromosome.isGoodChromosome(chromosome));
         }
     }
 
