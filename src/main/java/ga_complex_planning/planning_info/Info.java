@@ -15,6 +15,7 @@ import java.util.Map;
 public class Info {
     private static Map<String, Point> info = new HashMap<>();
     static {
+        info.put("start",new Point("start",100d,100d,0d,0d,0d,Double.MAX_VALUE)); // 起始点信息
         info.put("A",new Point("A",160d,180d,0.6d,0.18d,0d,3.4d));
         info.put("B",new Point("B",170d,50d,0.8d,0.48d,0d,7.1d));
         info.put("C",new Point("C",30d,120d,1.3d,0.78d,0d,5.6d));

@@ -142,7 +142,6 @@ public class Chromosome {
 
     }
 
-
     public int[] getGene() {
         return gene;
     }

@@ -4,7 +4,9 @@ import junit.framework.TestCase;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ChromosomeTest {
 
@@ -58,4 +60,17 @@ public class ChromosomeTest {
         list.sort(null);
         System.out.println(list);
     }
+
+    @Test
+    public void asciiTest() {
+        Map<String, String> map = new HashMap<>();
+        for (int i = 1; i <= 26; i++) {
+            map.put(String.valueOf(i),String.valueOf((char) (64+i)));
+        }
+        for (String key : map.keySet()) {
+            System.out.println(map.get(key));
+        }
+    }
+
+
 }
