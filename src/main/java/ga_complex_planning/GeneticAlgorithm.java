@@ -56,6 +56,7 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
     // 迭代次数
     int ITER_NUM = Integer.valueOf(gaComplexPro.getProperty("ITER_NUM"));
 
+
     // 基因长短
     private int geneSize = calculateGeneSize();
     // 当前种群最佳适应度
@@ -79,6 +80,27 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
     public void conductGA() {
         for (int i = 0; i < ITER_NUM; i++) {
 
+        }
+    }
+
+    /**
+     * 计算种群适应度
+     */
+    private void calculatePopScore() {
+        if (pop==null || pop.size()==0) return;
+        for (Chromosome chromosome : pop) {
+            calculateScore(chromosome);
+            totalScore+=chromosome.getScore();
+            if (chromosome.getScore()>bestScore) {
+                bestScore=chromosome.getScore();
+                bestGene= chromosome.getGene();
+            } else if (chromosome.getScore()<worstScore){
+                worstScore= chromosome.getScore();
+                worstGene= chromosome.getGene();
+            }
+            averageScore=totalScore/POP_SIZE;
+            // TODO: 种群适应度计算测试！！！
+            averageScore=averageScore>bestScore?bestScore:averageScore;
         }
     }
 
@@ -124,7 +146,7 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
                 // 行驶时间
                 double routeTime = routeLength / CAR_SPEED;
 
-                // TODO : 适应度计算
+                // TODO : 适应度计算 个体适应度计算测试！!!
                 currCarTotalTime+=routeTime;
                 // 1、是否符合时间窗
                 if (currCarTotalTime>endPoint.getEnd()) {
@@ -137,7 +159,6 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
                     scoreCount=scoreCount-(endPoint.getNeed()-carCurrCapacity)*GOOD_NEED_WEIGHT;
                     carCurrCapacity=0;
                 }
-
             }
         }
     }
