@@ -42,6 +42,10 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
     private int CAR_CAPACITY = Integer.valueOf(planningInfoPro.getProperty("CAR_CAPACITY"));
     // 车辆速度
     private int CAR_SPEED = Integer.valueOf(planningInfoPro.getProperty("CAR_SPEED"));
+    // 对时间窗需求的权重
+    private double TIME_WINDOW_WEIGHT = Double.valueOf(gaComplexPro.getProperty("TIME_WINDOW_WEIGHT"));
+    // 对货物需求的权重
+    private double GOOD_NEED_WEIGHT = Double.valueOf(gaComplexPro.getProperty("GOOD_NEED_WEIGHT"));
     // 受灾点个数
     private int POINT_NUM = info.size();
 
@@ -124,13 +128,13 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
                 currCarTotalTime+=routeTime;
                 // 1、是否符合时间窗
                 if (currCarTotalTime>endPoint.getEnd()) {
-                    scoreCount=scoreCount-(currCarTotalTime-endPoint.getEnd());
+                    scoreCount=scoreCount-(currCarTotalTime-endPoint.getEnd())*TIME_WINDOW_WEIGHT;
                 }
                 // 当前车辆运行时间还要加上受灾点需要的服务时间
                 currCarTotalTime+=endPoint.getServiceTime();
                 // 2、车辆运载的货物重量是否满足受灾点需求
                 if (carCurrCapacity<endPoint.getNeed()) {
-                    scoreCount=scoreCount-(endPoint.getNeed()-carCurrCapacity);
+                    scoreCount=scoreCount-(endPoint.getNeed()-carCurrCapacity)*GOOD_NEED_WEIGHT;
                     carCurrCapacity=0;
                 }
 
