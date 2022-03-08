@@ -1,6 +1,7 @@
 package ga_simple_planning;
 
 
+import com.sun.tools.javac.util.Pair;
 import org.junit.Test;
 
 
@@ -16,6 +17,8 @@ public class ChromosomeTest {
     @Test
     void decoder() {
         System.out.println(chromosome);
-        System.out.println(chromosome.decoder());
+        //System.out.println(chromosome.decoder());
     }
+
+
 }

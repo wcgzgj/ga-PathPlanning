@@ -1,5 +1,7 @@
 package ga_complex_planning;
 
+import com.sun.tools.javac.util.Pair;
+
 import java.util.*;
 
 /**
@@ -18,7 +20,9 @@ public class Chromosome {
 
     private static Random r = new Random();
 
-    public Chromosome(int carNum,int pointNum) {
+    public Chromosome() {}
+
+    public Chromosome(int carNum, int pointNum) {
         this.carNum=carNum;
         this.pointNum=pointNum;
         geneSize = carNum+1+pointNum;
@@ -131,14 +135,70 @@ public class Chromosome {
 
     /**
      * 交叉生成两个新的子代
+     * 这里确保两个子代都是符合染色体规范的
      * @param p1
      * @param p2
      * @return
      */
     public static List<Chromosome> genetic(Chromosome p1,Chromosome p2) {
+        if (p1==null || p2==null) return null;
+        if (p1.getGeneSize()!=p2.getGeneSize()) return null;
         List<Chromosome> children = new ArrayList<>();
 
+        // 起始点可能的集合（后期起始点可能不会设置为0）
+        Set<Integer> startPointSet = new HashSet<>();
+        startPointSet.add(1);
+        List<Pair<Integer, Integer>> possibleGeneticPair = getPossibleGeneticPair(p1, p2, startPointSet);
+        // 获取交叉位置
+        Pair<Integer, Integer> pair = possibleGeneticPair.get(r.nextInt(possibleGeneticPair.size()));
+        Chromosome c1 = p1.clone();
+        Chromosome c2 = p2.clone();
+        int[] c1Gene = c1.getGene();
+        int[] c2Gene = c2.getGene();
+        int left = pair.fst;
+        int right = pair.snd;
+        for (int i = left; i <=right ; i++) {
+            int tmp = c1Gene[i];
+            c1Gene[i]=c2Gene[i];
+            c2Gene[i]=tmp;
+        }
+        children.add(c1);
+        children.add(c2);
         return children;
+    }
+
+    /**
+     * 获取所有可能的交叉位置
+     * 使用双指针法获取
+     * 如果排除收尾后，还是，没有获取对应的点的信息
+     * 我们直接获取收尾（交换后的结果，就是两个染色体位置互换）
+     * @param p1
+     * @param p2
+     * @return
+     */
+    private static List<Pair<Integer,Integer>> getPossibleGeneticPair(Chromosome p1,Chromosome p2,Set<Integer>startPointSet) {
+        if (p1==null || p2==null) return null;
+        if (p1.getGeneSize()!=p2.getGeneSize()) return null;
+    }
+
+    /**
+     * 计算范围中起始点的个数是否一致
+     * 这样可以加速符合条件的子代生成
+     * @param left
+     * @param right
+     * @return
+     */
+    private static boolean isStartPointNumEquals(int left,int right,Chromosome p1,Chromosome p2,Set<Integer>startPointSet) {
+        if (left<0 || right<0 || left>=p1.getGeneSize() || right>=p1.getGeneSize()) return false;
+        int[] p1Gene = p1.getGene();
+        int[] p2Gene = p2.getGene();
+        int p1StartCount=0;
+        int p2StartCount=0;
+        for (int i = left; i <=right ; i++) {
+            if (startPointSet.contains(p1Gene[i])) p1StartCount++;
+            if (startPointSet.contains(p2Gene[i])) p2StartCount++;
+        }
+        return p1StartCount==p2StartCount;
     }
 
 
@@ -152,6 +212,24 @@ public class Chromosome {
      */
     public void mutation(int mutationNum) {
 
+    }
+
+    /**
+     * 对染色体进行深拷贝
+     * @return
+     */
+    public Chromosome clone() {
+        Chromosome child = new Chromosome();
+        child.setCarNum(carNum);
+        child.setPointNum(pointNum);
+        child.setGeneSize(geneSize);
+        int[] pGene = gene;
+        int[] cGene = new int[pGene.length];
+        for (int i = 0; i < pGene.length; i++) {
+            cGene[i]=pGene[i];
+        }
+        child.setGene(cGene);
+        return child;
     }
 
     public int[] getGene() {

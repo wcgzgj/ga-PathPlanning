@@ -1,5 +1,6 @@
 package ga_complex_planning;
 
+import com.sun.tools.javac.util.Pair;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -30,4 +31,13 @@ public class GeneticAlgorithmTest {
         //ga.calculateScore(chromosome);
         //System.out.println(chromosome.getScore());
     }
+
+    @Test
+    public void pairTest() {
+        Pair<Integer, Integer> pair = new Pair<>(1, 2);
+        Integer fst = pair.fst;
+        Integer snd = pair.snd;
+        System.out.println(pair);
+    }
+
 }
