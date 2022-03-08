@@ -48,13 +48,18 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
     private double GOOD_NEED_WEIGHT = Double.valueOf(gaComplexPro.getProperty("GOOD_NEED_WEIGHT"));
     // 受灾点个数
     private int POINT_NUM = info.size();
+    // 个体初始得分，设置初始得分是为了防止个体得分出现负数
+    private double ORIGIN_SCORE = Double.valueOf(gaComplexPro.getProperty("ORIGIN_SCORE"));
+    // 应急点紧急程度对应的权值
+    private double EMERGENCY_WEIGHT = Double.valueOf(gaComplexPro.getProperty("EMERGENCY_WEIGHT"));
 
     // 种群
     private List<Chromosome> pop = new ArrayList<>();
     // 种群大小
     private int POP_SIZE = Integer.valueOf(gaComplexPro.getProperty("POP_SIZE"));
     // 迭代次数
-    int ITER_NUM = Integer.valueOf(gaComplexPro.getProperty("ITER_NUM"));
+    private int ITER_NUM = Integer.valueOf(gaComplexPro.getProperty("ITER_NUM"));
+
 
 
     // 基因长短
@@ -106,6 +111,7 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
 
     // TODO: 使用强硬的适应度计算策略 <- 1、在初始化种群的时候 2、在父代交叉的时候
     // TODO : 当前使用 soft 策略，如果个体在时间窗内，又满足载重，那么适应度都是0，没法与其他个体产生区别
+    // TODO: 为了区分同分个体，我们还要将个体耗时，
     /**
      * 计算个体适应度 <---------  这里可以作为论文的研究点？
      *
@@ -137,6 +143,8 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
             double carCurrCapacity = CAR_CAPACITY;
             // 记录当前车辆已经使用的时间（方便与时间窗进行对比）
             double currCarTotalTime=0;
+            // 紧急程度权值起算起点
+            int emergencyStart = POINT_NUM;
             for (int i = 0; i < slice.size() - 1; i++) {
                 // 获取起始点和终点信息
                 Point startPoint = info.get(slice.get(i));
@@ -159,8 +167,13 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
                     scoreCount=scoreCount-(endPoint.getNeed()-carCurrCapacity)*GOOD_NEED_WEIGHT;
                     carCurrCapacity=0;
                 }
+                // 3、计算车辆紧急程度权值
+                scoreCount+=endPoint.getEmergency()*emergencyStart--*EMERGENCY_WEIGHT;
             }
         }
+        scoreCount+=ORIGIN_SCORE;
+        // 如果适应度分数为0，要做补偿
+        scoreCount = Math.max(0,scoreCount);
         chromosome.setScore(scoreCount);
     }
 

@@ -20,8 +20,9 @@ public class Point {
     // 受灾点时间窗
     private double start;
     private double end;
+    private int emergency;
 
-    public Point(String name, double x, double y, double need, double serviceTime, double start, double end) {
+    public Point(String name, double x, double y, double need, double serviceTime, double start, double end, int emergency) {
         this.name = name;
         this.x = x;
         this.y = y;
@@ -29,6 +30,7 @@ public class Point {
         this.serviceTime = serviceTime;
         this.start = start;
         this.end = end;
+        this.emergency = emergency;
     }
 
     public Point() {
@@ -90,6 +92,14 @@ public class Point {
         this.end = end;
     }
 
+    public int getEmergency() {
+        return emergency;
+    }
+
+    public void setEmergency(int emergency) {
+        this.emergency = emergency;
+    }
+
     @Override
     public String toString() {
         return "Point{" +
@@ -100,6 +110,7 @@ public class Point {
                 ", serviceTime=" + serviceTime +
                 ", start=" + start +
                 ", end=" + end +
+                ", emergency=" + emergency +
                 '}';
     }
 }
