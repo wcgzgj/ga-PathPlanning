@@ -179,6 +179,17 @@ public class Chromosome {
     private static List<Pair<Integer,Integer>> getPossibleGeneticPair(Chromosome p1,Chromosome p2,Set<Integer>startPointSet) {
         if (p1==null || p2==null) return null;
         if (p1.getGeneSize()!=p2.getGeneSize()) return null;
+        List<Pair<Integer, Integer>> res = new ArrayList<>();
+        int geneSize = p1.getGeneSize();
+        // 暂时不包含首尾
+        for (int l = 1; l <geneSize-1 ; l++) {
+            for (int r = l; r <geneSize-1 ; r++) {
+                if (isSwapScopeLegal(l,r,p1,p2,startPointSet)) {
+                    res.add(new Pair<>(l,r));
+                }
+            }
+        }
+        return res;
     }
 
     /**
@@ -188,17 +199,17 @@ public class Chromosome {
      * @param right
      * @return
      */
-    private static boolean isStartPointNumEquals(int left,int right,Chromosome p1,Chromosome p2,Set<Integer>startPointSet) {
+    private static boolean isSwapScopeLegal(int left,int right,Chromosome p1,Chromosome p2,Set<Integer>startPointSet) {
         if (left<0 || right<0 || left>=p1.getGeneSize() || right>=p1.getGeneSize()) return false;
         int[] p1Gene = p1.getGene();
         int[] p2Gene = p2.getGene();
-        int p1StartCount=0;
-        int p2StartCount=0;
-        for (int i = left; i <=right ; i++) {
-            if (startPointSet.contains(p1Gene[i])) p1StartCount++;
-            if (startPointSet.contains(p2Gene[i])) p2StartCount++;
-        }
-        return p1StartCount==p2StartCount;
+        //int p1StartCount=0;
+        //int p2StartCount=0;
+        //for (int i = left; i <=right ; i++) {
+        //    if (startPointSet.contains(p1Gene[i])) p1StartCount++;
+        //    if (startPointSet.contains(p2Gene[i])) p2StartCount++;
+        //}
+        //return p1StartCount==p2StartCount;
     }
 
 
