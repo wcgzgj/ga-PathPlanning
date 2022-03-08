@@ -39,9 +39,9 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
     // 车辆数目
     private int CAR_NUM = Integer.valueOf(planningInfoPro.getProperty("CAR_NUM"));
     // 车辆载重
-    private int CAR_CAPACITY = Integer.valueOf(planningInfoPro.getProperty("CAR_CAPACITY"));
+    private double CAR_CAPACITY = Double.valueOf(planningInfoPro.getProperty("CAR_CAPACITY"));
     // 车辆速度
-    private int CAR_SPEED = Integer.valueOf(planningInfoPro.getProperty("CAR_SPEED"));
+    private double CAR_SPEED = Double.valueOf(planningInfoPro.getProperty("CAR_SPEED"));
     // 对时间窗需求的权重
     private double TIME_WINDOW_WEIGHT = Double.valueOf(gaComplexPro.getProperty("TIME_WINDOW_WEIGHT"));
     // 对货物需求的权重
@@ -105,6 +105,7 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
     }
 
     // TODO: 使用强硬的适应度计算策略 <- 1、在初始化种群的时候 2、在父代交叉的时候
+    // TODO : 当前使用 soft 策略，如果个体在时间窗内，又满足载重，那么适应度都是0，没法与其他个体产生区别
     /**
      * 计算个体适应度 <---------  这里可以作为论文的研究点？
      *
@@ -119,7 +120,7 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
      * 2、单个车体到达时间是否在时间窗之内
      * @param chromosome
      */
-    private void calculateScore(Chromosome chromosome) {
+    public void calculateScore(Chromosome chromosome) {
         if (!Chromosome.isGoodChromosome(chromosome)) {
             throw new RuntimeException("错误：当前染色体出现错误，无法计算");
         }
@@ -133,7 +134,7 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
         // 每个片段，代表一辆车的行驶路径
         for (List<String> slice : decodedGeneList) {
             // 记录车辆剩余货物重量
-            int carCurrCapacity = CAR_CAPACITY;
+            double carCurrCapacity = CAR_CAPACITY;
             // 记录当前车辆已经使用的时间（方便与时间窗进行对比）
             double currCarTotalTime=0;
             for (int i = 0; i < slice.size() - 1; i++) {
@@ -146,7 +147,6 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
                 // 行驶时间
                 double routeTime = routeLength / CAR_SPEED;
 
-                // TODO : 适应度计算 个体适应度计算测试！!!
                 currCarTotalTime+=routeTime;
                 // 1、是否符合时间窗
                 if (currCarTotalTime>endPoint.getEnd()) {
@@ -161,6 +161,7 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
                 }
             }
         }
+        chromosome.setScore(scoreCount);
     }
 
     /**
