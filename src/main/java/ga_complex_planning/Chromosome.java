@@ -129,6 +129,18 @@ public class Chromosome {
         return true;
     }
 
+    /**
+     * 交叉生成两个新的子代
+     * @param p1
+     * @param p2
+     * @return
+     */
+    public static List<Chromosome> genetic(Chromosome p1,Chromosome p2) {
+        List<Chromosome> children = new ArrayList<>();
+
+        return children;
+    }
+
 
     /**
      * 基因变异

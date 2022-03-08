@@ -21,13 +21,13 @@ public class GeneticAlgorithmTest {
      */
     @Test
     public void calculateScore() {
-        Chromosome chromosome = new Chromosome(2, 5);
-        chromosome.setGene(new int[]{0,5,3,0,4,1,2,0});
-        ga.calculateScore(chromosome);
-        System.out.println(chromosome.getScore());
-
-        chromosome.setGene(new int[]{0,2,1,4,0,3,5,0});
-        ga.calculateScore(chromosome);
-        System.out.println(chromosome.getScore());
+        //Chromosome chromosome = new Chromosome(2, 5);
+        //chromosome.setGene(new int[]{0,5,3,0,4,1,2,0});
+        //ga.calculateScore(chromosome);
+        //System.out.println(chromosome.getScore());
+        //
+        //chromosome.setGene(new int[]{0,2,1,4,0,3,5,0});
+        //ga.calculateScore(chromosome);
+        //System.out.println(chromosome.getScore());
     }
 }

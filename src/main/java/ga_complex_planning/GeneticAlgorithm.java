@@ -4,10 +4,7 @@ import ga_complex_planning.planning_info.Info;
 import ga_complex_planning.pojo.Point;
 import util.PropertyUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * @ClassName GeneticAlgorithm
@@ -20,6 +17,8 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
 
     private Properties gaComplexPro = PropertyUtil.getProperty("ga_complex");
     private Properties planningInfoPro = PropertyUtil.getProperty("planning_info");
+
+    private static final Random r = new Random();
 
     // 当且仅当 GeneticAlgorithm 对象被实例化后，下面这段静态代码块才会执行
     // 此时，codeMap 的值才会存在
@@ -78,13 +77,30 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
     private int[] worstGene = null;
 
 
-
     /**
      * 执行遗传算法函数
+     * @return 执行结束后最佳的种群基因
      */
-    public void conductGA() {
+    public int[] conductGA() {
+        init();
         for (int i = 0; i < ITER_NUM; i++) {
+            // 1、计算种群适应度
+            calculatePopScore();
+            // 2、交叉生成新的种群
+            evolve();
+            // 3、种群变异
+            mutation();
+        }
+        return bestGene;
+    }
 
+    /**
+     * 初始化种群
+     */
+    private void init() {
+        for (int i = 0; i < POP_SIZE ;i++) {
+            Chromosome chromosome = new Chromosome(CAR_NUM, POINT_NUM);
+            pop.add(chromosome);
         }
     }
 
@@ -110,8 +126,6 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
     }
 
     // TODO: 使用强硬的适应度计算策略 <- 1、在初始化种群的时候 2、在父代交叉的时候
-    // TODO : 当前使用 soft 策略，如果个体在时间窗内，又满足载重，那么适应度都是0，没法与其他个体产生区别
-    // TODO: 为了区分同分个体，我们还要将个体耗时，
     /**
      * 计算个体适应度 <---------  这里可以作为论文的研究点？
      *
@@ -126,7 +140,7 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
      * 2、单个车体到达时间是否在时间窗之内
      * @param chromosome
      */
-    public void calculateScore(Chromosome chromosome) {
+    private void calculateScore(Chromosome chromosome) {
         if (!Chromosome.isGoodChromosome(chromosome)) {
             throw new RuntimeException("错误：当前染色体出现错误，无法计算");
         }
@@ -175,6 +189,55 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
         // 如果适应度分数为0，要做补偿
         scoreCount = Math.max(0,scoreCount);
         chromosome.setScore(scoreCount);
+    }
+
+    /**
+     * 轮盘赌算法  获取较优的父个体
+     * @return
+     */
+    private Chromosome getParentChromosome() {
+        // 轮盘赌选中的部分
+        double slice = Math.random() * totalScore;
+        double sum = 0d;
+        for (Chromosome chromosome : pop) {
+            sum+=chromosome.getScore();
+            // 轮盘赌选中
+            if (sum>slice) return chromosome;
+        }
+        return pop.get(pop.size()-1);
+    }
+
+    /**
+     * 交叉产生新的子代
+     * 这里要注意，一定要避免迭代次数过多导致的程序阻塞
+     *
+     */
+    // TODO: 改进点：可以通过修改 Genetic 算法，避免出现不符合要求的子代，从而减少迭代的生成
+    private void evolve() {
+        List<Chromosome> newPop = new ArrayList<>();
+        while (newPop.size()<POP_SIZE) {
+            Chromosome p1 = getParentChromosome();
+            Chromosome p2 = getParentChromosome();
+            List<Chromosome> children = Chromosome.genetic(p1, p2);
+            // TODO: 设置最大迭代次数
+            for (Chromosome child : children) {
+                if (Chromosome.isGoodChromosome(child)) {
+                    newPop.add(child);
+                }
+            }
+        }
+        // 保证新生成的子代长度与原父代长度相等
+        while (newPop.size()>POP_SIZE) {
+            newPop.remove(r.nextInt(newPop.size()));
+        }
+        pop.clear();
+    }
+
+    /**
+     * 种群变异
+     */
+    private void mutation() {
+
     }
 
     /**
