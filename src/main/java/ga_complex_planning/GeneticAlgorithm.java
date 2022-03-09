@@ -125,7 +125,6 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
                 worstGene= chromosome.getGene();
             }
             averageScore=totalScore/POP_SIZE;
-            // TODO: 种群适应度计算测试！！！
             averageScore=averageScore>bestScore?bestScore:averageScore;
         }
     }

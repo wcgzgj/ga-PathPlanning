@@ -21,6 +21,11 @@ public class Info {
         info.put("C",new Point("C",30d,120d,1.3d,0.78d,0d,5.6d,2));
         info.put("D",new Point("D",60d,90d,0.7d,1.08d,0d,3.2d,4));
         info.put("E",new Point("E",250d,30d,1.3d,1.38d,0d,10d,1));
+        info.put("F",new Point("F",190d,110d,1.4d,1.68d,0d,6.2d,3));
+        info.put("G",new Point("G",80d,130d,1.7d,1.98d,0d,3.8d,4));
+        info.put("H",new Point("H",140d,50d,2.8d,2.28d,0d,4.7d,2));
+        info.put("I",new Point("I",30d,20d,2.6d,2.58d,0d,7d,1));
+        info.put("J",new Point("J",10d,70d,2.6d,2.88d,0d,6d,1));
     }
 
     public static Map<String, Point> getInfo() {
