@@ -21,6 +21,8 @@ public class DrawingToolsTest {
         Map<Double,Double>[] dataSet = new Map[]{map1};
         String[] types = {"DDD"};
         DrawingTools.drawLineChart("TestWindow","测试","x轴","y轴",dataSet,types);
+
+        DrawingTools.drawLineChart("TestWindow","测试","x轴","y轴",dataSet,types);
         Scanner in = new Scanner(System.in);
         in.hasNext();
     }

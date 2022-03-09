@@ -2,7 +2,7 @@ package ga_complex_planning;
 
 
 /**
- * @ClassName SImplePlanningApplication
+ * @ClassName ComplexPlanningApplication
  * @Description TODO
  * @Author faro_z
  * @Date 2022/3/2 9:36 下午

@@ -92,6 +92,10 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
             // 1、计算种群适应度
             calculatePopScore();
             print(i+1);
+            //System.out.println("当前种群为:");
+            //for (Chromosome chromosome : pop) {
+            //    System.out.println(chromosome);
+            //}
             // 2、交叉生成新的种群
             evolve();
             // 3、种群变异
@@ -106,12 +110,12 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
     private void print(int generation) {
         System.out.println("----------------------------------------");
         System.out.println("当前代数："+generation);
-        System.out.println("最佳适应度："+bestScore);
-        System.out.println("最坏适应度"+worstScore);
-        System.out.println("总适应度："+totalScore);
-        System.out.println("平均适应度："+averageScore);
-        System.out.println("最佳基因："+Arrays.toString(bestGene));
-        System.out.println("最坏基因："+Arrays.toString(worstGene));
+        System.out.println("当前种群最佳适应度："+bestScore);
+        System.out.println("当前种群最坏适应度："+worstScore);
+        System.out.println("当前种群总适应度："+totalScore);
+        System.out.println("当前种群平均适应度："+averageScore);
+        System.out.println("当前种群最佳基因："+Arrays.toString(bestGene));
+        System.out.println("当前种群最坏基因："+Arrays.toString(worstGene));
     }
 
     /**
@@ -131,6 +135,10 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
         if (pop==null || pop.size()==0) return;
         totalScore=0;
         averageScore=0;
+        bestScore=0;
+        worstScore=Double.MAX_VALUE;
+        bestGene=null;
+        worstGene=null;
         for (Chromosome chromosome : pop) {
             calculateScore(chromosome);
             //System.out.println(chromosome);
