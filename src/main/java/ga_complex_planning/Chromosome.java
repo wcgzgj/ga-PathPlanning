@@ -48,8 +48,6 @@ public class Chromosome {
      * 0 3 3 0 1 4 0  (3受灾点重复)
      * 0 0 3 2 1 4 0  (有两个起始点重合->有车子没出发)
      */
-    // TODO: 记录生成过程中出现过的不合格的位置，
-    //  以减少 carNum 趋近于 points 时出现的初始化时间越来越长的问题
     public void init() {
         int remainStartPoints = carNum + 1;
         gene[0]=0;
@@ -147,7 +145,7 @@ public class Chromosome {
 
         // 起始点可能的集合（后期起始点可能不会设置为0）
         Set<Integer> startPointSet = new HashSet<>();
-        startPointSet.add(1);
+        startPointSet.add(0);
         List<Pair<Integer, Integer>> possibleGeneticPair = getPossibleGeneticPair(p1, p2, startPointSet);
         // 获取交叉位置
         Pair<Integer, Integer> pair = possibleGeneticPair.get(r.nextInt(possibleGeneticPair.size()));
@@ -176,7 +174,7 @@ public class Chromosome {
      * @param p2
      * @return
      */
-    private static List<Pair<Integer,Integer>> getPossibleGeneticPair(Chromosome p1,Chromosome p2,Set<Integer>startPointSet) {
+    public static List<Pair<Integer,Integer>> getPossibleGeneticPair(Chromosome p1,Chromosome p2,Set<Integer>startPointSet) {
         if (p1==null || p2==null) return null;
         if (p1.getGeneSize()!=p2.getGeneSize()) return null;
         List<Pair<Integer, Integer>> res = new ArrayList<>();
@@ -200,16 +198,33 @@ public class Chromosome {
      * @return
      */
     private static boolean isSwapScopeLegal(int left,int right,Chromosome p1,Chromosome p2,Set<Integer>startPointSet) {
-        if (left<0 || right<0 || left>=p1.getGeneSize() || right>=p1.getGeneSize()) return false;
+        if (left<=0 || right<=0 || left>=p1.getGeneSize()-1 || right>=p1.getGeneSize()-1) return false;
         int[] p1Gene = p1.getGene();
         int[] p2Gene = p2.getGene();
-        //int p1StartCount=0;
-        //int p2StartCount=0;
-        //for (int i = left; i <=right ; i++) {
-        //    if (startPointSet.contains(p1Gene[i])) p1StartCount++;
-        //    if (startPointSet.contains(p2Gene[i])) p2StartCount++;
-        //}
-        //return p1StartCount==p2StartCount;
+        int p1StartCount=0;
+        int p2StartCount=0;
+        for (int i = left; i <=right ; i++) {
+            if (startPointSet.contains(p1Gene[i])) p1StartCount++;
+            if (startPointSet.contains(p2Gene[i])) p2StartCount++;
+        }
+        // 待交换基因片段中，起始点位置不一致（说明交换后染色体就不合法了）
+        if (p1StartCount!=p2StartCount) {
+            return false;
+        }
+        // TODO: 这里写完
+        if (startPointSet.contains(p1Gene[left])) {
+            if (p1Gene[left-1]==0 || p1Gene[left+1]==0) return false;
+        }
+        if (startPointSet.contains(p1Gene[right])) {
+            if (p1Gene[right-1]==0 || p1Gene[right+1]==0) return false;
+        }
+        if (startPointSet.contains(p2Gene[left])) {
+            if (p2Gene[left-1]==0 || p2Gene[left+1]==0) return false;
+        }
+        if (startPointSet.contains(p2Gene[right])) {
+            if (p2Gene[right-1]==0 || p2Gene[right+1]==0) return false;
+        }
+        return true;
     }
 
 

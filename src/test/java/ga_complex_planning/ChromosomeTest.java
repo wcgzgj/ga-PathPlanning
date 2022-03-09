@@ -1,12 +1,10 @@
 package ga_complex_planning;
 
+import com.sun.tools.javac.util.Pair;
 import junit.framework.TestCase;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ChromosomeTest {
 
@@ -72,5 +70,53 @@ public class ChromosomeTest {
         }
     }
 
+    @Test
+    public void cloneTest() {
+        Chromosome c1 = new Chromosome(2, 10);
+        System.out.println(c1);
+        System.out.println(c1.clone());
+    }
 
+
+    @Test
+    public void getPossibleGeneticPair() {
+        Set<Integer> set = new HashSet<>();
+        set.add(0);
+        Chromosome chromosome1 = new Chromosome(2, 5);
+        chromosome1.setGene(new int[]{0,1,2,3,0,4,5,0});
+
+        Chromosome chromosome2 = new Chromosome(2, 5);
+        chromosome2.setGene(new int[]{0,1,0,3,2,4,5,0});
+
+        List<Pair<Integer, Integer>> list = Chromosome.getPossibleGeneticPair(chromosome1, chromosome2, set);
+        System.out.println(list);
+        // [Pair[1,1], Pair[1,4], Pair[1,5], Pair[1,6], Pair[2,4],
+        // Pair[2,5], Pair[2,6], Pair[3,3], Pair[5,5], Pair[5,6], Pair[6,6]]
+    }
+
+    @Test
+    public void geneticTest() {
+        Chromosome chromosome1 = new Chromosome(2, 5);
+        chromosome1.setGene(new int[]{0,1,2,3,0,4,5,0});
+
+        Chromosome chromosome2 = new Chromosome(2, 5);
+        chromosome2.setGene(new int[]{0,1,0,3,2,4,5,0});
+
+        List<Chromosome> children = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            List<Chromosome> tmp = Chromosome.genetic(chromosome1, chromosome2);
+            for (Chromosome chromosome : tmp) {
+                children.add(chromosome);
+            }
+        }
+        int errorCount = 0;
+        for (Chromosome child : children) {
+            System.out.println(child);
+            if (!Chromosome.isGoodChromosome(child)) {
+                errorCount++;
+                System.out.println("出现不合适的染色体！！！！！");
+            }
+        }
+        System.out.println("出现不合适染色体概率为："+errorCount+"/100");
+    }
 }
