@@ -119,4 +119,25 @@ public class ChromosomeTest {
         }
         System.out.println("出现不合适染色体概率为："+errorCount+"/100");
     }
+
+    @Test
+    public void mutation() {
+        Chromosome chromosome1 = new Chromosome(2, 5);
+        chromosome1.setGene(new int[]{0,1,2,3,0,4,5,0});
+        List<Chromosome> list = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            Chromosome dummy = chromosome1.clone();
+            dummy.mutation(dummy.getGeneSize()/2);
+            list.add(dummy);
+        }
+        int errCount = 0;
+        for (Chromosome chromosome : list) {
+            System.out.println(chromosome);
+            if (!Chromosome.isGoodChromosome(chromosome)) {
+                errCount++;
+                System.out.println("出现变异异常的个体！！！");
+            }
+        }
+        System.out.println("编译失败概率为："+(double)errCount/100 +"%");
+    }
 }

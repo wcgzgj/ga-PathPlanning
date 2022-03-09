@@ -211,7 +211,7 @@ public class Chromosome {
         if (p1StartCount!=p2StartCount) {
             return false;
         }
-        // TODO: 这里写完
+        // 保证交换位置合法
         if (startPointSet.contains(p1Gene[left])) {
             if (p1Gene[left-1]==0 || p1Gene[left+1]==0) return false;
         }
@@ -232,12 +232,56 @@ public class Chromosome {
      * 基因变异
      * 为保证符合路径要求，基因变异只能进行基因组片段交换
      * 且交换条件如下：
-     * 1、两两都不是起始点
+     * 1、两两都不是 startPoint
      * 2、两个中只能有一个为起始点，且这个起始点不可以是头或尾
-     * @param mutationNum
+     *   X 3、两两都是 startPoint <--- 这种变异没有意义，排除
+     *
+     * @param maxMutationNum
      */
-    public void mutation(int mutationNum) {
+    public void mutation(int maxMutationNum) {
+        // 如果要变异，变异对的个数起码也得是1对
+        int mutationPairNum = Math.max((int) Math.random() * maxMutationNum / 2,1);
+        // 变异策略有两种
+        // 1、找出所有合理变异对，然后选择
+        // 2、随机选择变异对，然后判断是否合理
+        // 这里选择第二种，因为其命中概率不低，不会造成太高的迭代
+        int left = r.nextInt(geneSize - 2) + 1;
+        int right = r.nextInt(geneSize - 2) + 1;
+        // 防止出现过高迭代，导致阻塞
+        int maxIterNum = 400;
+        while (!isSwapPairLegal(left,right) && maxIterNum>=0) {
+            left = r.nextInt(geneSize - 2) + 1;
+            right = r.nextInt(geneSize - 2) + 1;
+            maxIterNum--;
+            if (maxIterNum<0) {
+                left=0;
+                right=0;
+            }
+        }
+        // 交换目标基因
+        int tmp = gene[left];
+        gene[left] = gene[right];
+        gene[right]=tmp;
+    }
 
+    /**
+     * 判断待变异前的数对是否符合要求
+     * @param left
+     * @param right
+     * @return
+     */
+    private boolean isSwapPairLegal(int left,int right) {
+        // 都是非 startPoint，可以变异
+        if (gene[left]!=0 && gene[right]!=0) return true;
+        // 无效变异
+        if (gene[left]==0 && gene[right]==0) return false;
+        // 判断交换后是否还合法
+        Chromosome dummy = this.clone();
+        int[] gene = dummy.getGene();
+        int tmp = gene[left];
+        gene[left]=gene[right];
+        gene[right]=tmp;
+        return isGoodChromosome(dummy);
     }
 
     /**
