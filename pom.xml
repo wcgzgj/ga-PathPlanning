@@ -27,6 +27,12 @@
             <version>1.23</version>
         </dependency>
 
+        <!-- Java 绘图 -->
+        <dependency>
+            <groupId>jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.0.13</version>
+        </dependency>
     </dependencies>
 
 </project>
