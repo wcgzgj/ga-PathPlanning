@@ -105,7 +105,7 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
      */
     private void print(int generation) {
         System.out.println("----------------------------------------");
-        System.out.println("当前带数："+generation);
+        System.out.println("当前代数："+generation);
         System.out.println("最佳适应度："+bestScore);
         System.out.println("最坏适应度"+worstScore);
         System.out.println("总适应度："+totalScore);
@@ -129,13 +129,17 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
      */
     private void calculatePopScore() {
         if (pop==null || pop.size()==0) return;
+        totalScore=0;
+        averageScore=0;
         for (Chromosome chromosome : pop) {
             calculateScore(chromosome);
+            //System.out.println(chromosome);
             totalScore+=chromosome.getScore();
             if (chromosome.getScore()>bestScore) {
                 bestScore=chromosome.getScore();
                 bestGene= chromosome.getGene();
-            } else if (chromosome.getScore()<worstScore){
+            }
+            if (chromosome.getScore()<worstScore){
                 worstScore= chromosome.getScore();
                 worstGene= chromosome.getGene();
             }
@@ -217,11 +221,14 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
     private Chromosome getParentChromosome() {
         // 轮盘赌选中的部分
         double slice = Math.random() * totalScore;
+        //System.out.println("轮盘赌 slice:"+slice);
+        //System.out.println("轮盘赌 total:"+totalScore);
         double sum = 0d;
         for (Chromosome chromosome : pop) {
             sum+=chromosome.getScore();
             // 轮盘赌选中
             if (sum>slice) return chromosome;
+            //System.out.println("轮盘赌选中个体为:\n"+chromosome);
         }
         return pop.get(pop.size()-1);
     }
@@ -249,6 +256,7 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
             newPop.remove(r.nextInt(newPop.size()));
         }
         pop.clear();
+        pop=newPop;
     }
 
     /**
