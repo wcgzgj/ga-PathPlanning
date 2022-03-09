@@ -76,6 +76,11 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
     // 总迭代中的最坏基因
     private int[] worstGene = null;
 
+    // 变异概率
+    private double MUTATION_RATE = Double.valueOf(gaComplexPro.getProperty("MUTATION_RATE"));
+    // 最大变异长度
+    private int MAX_MUTATION_NUM = geneSize/2;
+
 
     /**
      * 执行遗传算法函数
@@ -212,14 +217,13 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
      * 这里要注意，一定要避免迭代次数过多导致的程序阻塞
      *
      */
-    // TODO: 改进点：可以通过修改 Genetic 算法，避免出现不符合要求的子代，从而减少迭代的生成
     private void evolve() {
         List<Chromosome> newPop = new ArrayList<>();
         while (newPop.size()<POP_SIZE) {
             Chromosome p1 = getParentChromosome();
             Chromosome p2 = getParentChromosome();
+            // genetic 保证生成的子代一定合法
             List<Chromosome> children = Chromosome.genetic(p1, p2);
-            // TODO: 设置最大迭代次数
             for (Chromosome child : children) {
                 if (Chromosome.isGoodChromosome(child)) {
                     newPop.add(child);
@@ -235,9 +239,15 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
 
     /**
      * 种群变异
+     * 种群变异为了保证变异后子代还是符合条件的
+     * 必须对基因组序列进行两两交换
      */
     private void mutation() {
-
+        for (Chromosome chromosome : pop) {
+            if (Math.random()<MUTATION_RATE) {
+                chromosome.mutation(MAX_MUTATION_NUM);
+            }
+        }
     }
 
     /**
