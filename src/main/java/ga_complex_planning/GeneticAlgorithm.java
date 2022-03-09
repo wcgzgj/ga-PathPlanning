@@ -45,8 +45,8 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
     private double TIME_WINDOW_WEIGHT = Double.valueOf(gaComplexPro.getProperty("TIME_WINDOW_WEIGHT"));
     // 对货物需求的权重
     private double GOOD_NEED_WEIGHT = Double.valueOf(gaComplexPro.getProperty("GOOD_NEED_WEIGHT"));
-    // 受灾点个数
-    private int POINT_NUM = info.size();
+    // 受灾点个数  start 点不能计算在其中
+    private int POINT_NUM = info.size()-1;
     // 个体初始得分，设置初始得分是为了防止个体得分出现负数
     private double ORIGIN_SCORE = Double.valueOf(gaComplexPro.getProperty("ORIGIN_SCORE"));
     // 应急点紧急程度对应的权值
@@ -91,12 +91,28 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
         for (int i = 0; i < ITER_NUM; i++) {
             // 1、计算种群适应度
             calculatePopScore();
+            print(i+1);
             // 2、交叉生成新的种群
             evolve();
             // 3、种群变异
             mutation();
         }
         return bestGene;
+    }
+
+    /**
+     * 临时打印相关信息
+     */
+    private void print(int generation) {
+        System.out.println("----------------------------------------");
+        System.out.println("当前带数："+generation);
+        System.out.println("最佳适应度："+bestScore);
+        System.out.println("最坏适应度"+worstScore);
+        System.out.println("总适应度："+totalScore);
+        System.out.println("平均适应度："+averageScore);
+        System.out.println("最佳基因："+Arrays.toString(bestGene));
+        System.out.println("最坏基因："+Arrays.toString(worstGene));
+        System.out.println("----------------------------------------");
     }
 
     /**

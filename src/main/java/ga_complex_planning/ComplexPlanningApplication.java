@@ -1,9 +1,5 @@
 package ga_complex_planning;
 
-import ga_complex_planning.planning_info.Info;
-import ga_complex_planning.pojo.Point;
-
-import java.util.Map;
 
 /**
  * @ClassName SImplePlanningApplication
@@ -14,6 +10,8 @@ import java.util.Map;
  **/
 public class ComplexPlanningApplication {
     public static void main(String[] args) {
-        Map<String, Point> info = Info.getInfo();
+        //Map<String, Point> info = Info.getInfo();
+        GeneticAlgorithm ga = new GeneticAlgorithm();
+        ga.conductGA();
     }
 }
