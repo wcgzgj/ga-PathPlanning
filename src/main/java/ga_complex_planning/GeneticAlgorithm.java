@@ -112,7 +112,6 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
         System.out.println("平均适应度："+averageScore);
         System.out.println("最佳基因："+Arrays.toString(bestGene));
         System.out.println("最坏基因："+Arrays.toString(worstGene));
-        System.out.println("----------------------------------------");
     }
 
     /**
