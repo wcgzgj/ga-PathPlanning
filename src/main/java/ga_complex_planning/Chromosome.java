@@ -241,6 +241,7 @@ public class Chromosome {
      *
      * @param maxMutationNum
      */
+    // TODO:
     public void mutation(int maxMutationNum) {
         // 如果要变异，变异对的个数起码也得是1对
         int mutationPairNum = Math.max((int) Math.random() * maxMutationNum / 2,1);

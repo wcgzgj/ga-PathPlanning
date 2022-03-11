@@ -71,9 +71,9 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
     private double totalScore = 0;
     // 当前种群平均适应度
     private double averageScore = 0;
-    // 总迭代中的最佳基因
+    // 当前种群最佳基因
     private int[] bestGene = null;
-    // 总迭代中的最坏基因
+    // 当前种群最坏基因
     private int[] worstGene = null;
 
     // 变异概率

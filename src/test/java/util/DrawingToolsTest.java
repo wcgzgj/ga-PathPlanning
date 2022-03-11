@@ -23,6 +23,10 @@ public class DrawingToolsTest {
         DrawingTools.drawLineChart("TestWindow","测试","x轴","y轴",dataSet,types);
 
         DrawingTools.drawLineChart("TestWindow","测试","x轴","y轴",dataSet,types);
+        stop();
+    }
+
+    private static void stop() {
         Scanner in = new Scanner(System.in);
         in.hasNext();
     }
