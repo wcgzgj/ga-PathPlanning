@@ -20,6 +20,7 @@ public class Point {
     // 受灾点时间窗
     private double start;
     private double end;
+    // 紧急程度
     private int emergency;
 
     public Point(String name, double x, double y, double need, double serviceTime, double start, double end, int emergency) {
