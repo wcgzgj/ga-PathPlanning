@@ -2,6 +2,7 @@ package ga_complex_planning;
 
 import ga_complex_planning.planning_info.Info;
 import ga_complex_planning.pojo.Point;
+import util.GAGraphUtil;
 import util.PropertyUtil;
 
 import java.util.*;
@@ -17,6 +18,10 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
 
     private Properties gaComplexPro = PropertyUtil.getProperty("ga_complex");
     private Properties planningInfoPro = PropertyUtil.getProperty("planning_info");
+
+    private Map<Double,Double> bestScoreDataMap = new HashMap<>();
+    private Map<Double,Double> worstScoreDataMap = new HashMap<>();
+    private Map<Double,Double> totalScoreDataMap = new HashMap<>();
 
     private static final Random r = new Random();
 
@@ -58,6 +63,8 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
     private int POP_SIZE = Integer.valueOf(gaComplexPro.getProperty("POP_SIZE"));
     // 迭代次数
     private int ITER_NUM = Integer.valueOf(gaComplexPro.getProperty("ITER_NUM"));
+    // 迭代次数计数
+    private int iterCount = 0;
 
 
 
@@ -101,6 +108,14 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
             // 3、种群变异
             mutation();
         }
+        Map[] bestWorstDataSet = new Map[2];
+        Map[] totalDataSet = new Map[1];
+        bestWorstDataSet[0]=bestScoreDataMap;
+        bestWorstDataSet[1]=worstScoreDataMap;
+        totalDataSet[0]=totalScoreDataMap;
+        GAGraphUtil.drawBestWorstScoreGraph(bestWorstDataSet);
+        GAGraphUtil.drawTotalScoreGraph(totalDataSet);
+        GAGraphUtil.blockUtil();
         return bestGene;
     }
 
@@ -132,6 +147,7 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
      * 计算种群适应度
      */
     private void calculatePopScore() {
+        iterCount++;
         if (pop==null || pop.size()==0) return;
         totalScore=0;
         averageScore=0;
@@ -154,6 +170,10 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
             averageScore=totalScore/POP_SIZE;
             averageScore=averageScore>bestScore?bestScore:averageScore;
         }
+        // 将待绘制的折线图数据信息存入 map 中
+        bestScoreDataMap.put((double) iterCount,bestScore);
+        worstScoreDataMap.put((double) iterCount,worstScore);
+        totalScoreDataMap.put((double) iterCount,totalScore);
     }
 
     // TODO: 使用强硬的适应度计算策略 <- 1、在初始化种群的时候 2、在父代交叉的时候
