@@ -1,7 +1,8 @@
 package util;
 
-import java.util.Map;
-import java.util.Scanner;
+import ga_complex_planning.Chromosome;
+
+import java.util.*;
 
 /**
  * @ClassName GAGraphUtil
@@ -29,6 +30,38 @@ public class GAGraphUtil {
     public static void drawBestWorstScoreGraph(Map[] dataSet) {
         String[] types = {"最佳适应度", "最坏适应度"};
         DrawingTools.drawLineChart("最佳/最坏适应度变化","最佳/最坏适应度变化","迭代次数","适应度得分",dataSet,types);
+    }
+
+    /**
+     * 绘制当前种群适应度函数分布
+     * @param pop
+     */
+    public static void drawCurrentPopScoreDistributeGraph(List<Chromosome> pop,int iterNum) {
+        List<Double> list = new ArrayList<>();
+        for (Chromosome chrom : pop) {
+            list.add(chrom.getScore());
+        }
+        Map<Double, Double> map = new HashMap<>();
+        Double randomData = list.get(0);
+        System.out.println("randomData:"+randomData);
+        int mod = 1;
+        while (randomData>=10) {
+            mod*=10;
+            randomData/=10;
+        }
+        for (Double elem : list) {
+            int key = (int) (elem / mod);
+            System.out.println("key:"+key);
+            Double origin = map.get(key);
+            if (origin==null) origin=0d;
+            origin++;
+            map.put((double) key,origin);
+        }
+        System.out.println("Map值为"+map);
+        System.out.println("mod:"+mod);
+        Map[] dataSet = new Map[]{map};
+        String[] types = {"种群适应度分数分布"};
+        DrawingTools.drawLineChart("当前代数："+iterNum,"种群适应度分数分布"+iterNum,"分数范围","出现次数",dataSet,types);
     }
 
     /**

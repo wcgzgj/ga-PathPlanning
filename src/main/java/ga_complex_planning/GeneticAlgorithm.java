@@ -98,6 +98,7 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
         for (int i = 0; i < ITER_NUM; i++) {
             // 1、计算种群适应度
             calculatePopScore();
+            //GAGraphUtil.drawCurrentPopScoreDistributeGraph(pop,iterCount);
             print(i+1);
             //System.out.println("当前种群为:");
             //for (Chromosome chromosome : pop) {
@@ -189,6 +190,7 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
      * 需要考虑：
      * 1、单个车体载重能否满足所有受灾点
      * 2、单个车体到达时间是否在时间窗之内
+     * 3、受灾点的紧急程度
      * @param chromosome
      */
     private void calculateScore(Chromosome chromosome) {
@@ -232,12 +234,17 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
                     scoreCount=scoreCount-(endPoint.getNeed()-carCurrCapacity)*GOOD_NEED_WEIGHT;
                     carCurrCapacity=0;
                 }
+                // 减去当前受灾点消耗掉的货物
+                carCurrCapacity-=endPoint.getNeed();
                 // 3、计算车辆紧急程度权值
                 scoreCount+=endPoint.getEmergency()*emergencyStart--*EMERGENCY_WEIGHT;
             }
         }
-        scoreCount+=ORIGIN_SCORE;
         // 如果适应度分数为0，要做补偿
+        scoreCount+=ORIGIN_SCORE;
+        //System.out.println("score为："+scoreCount);
+        // 最终策略，防止适应度分数小于0，使轮盘赌失效
+        // 如果出现大量分数为负数的情况，绘制出的图形会出现异常
         scoreCount = Math.max(0,scoreCount);
         chromosome.setScore(scoreCount);
     }
@@ -252,10 +259,15 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
         //System.out.println("轮盘赌 slice:"+slice);
         //System.out.println("轮盘赌 total:"+totalScore);
         double sum = 0d;
+        //int targetCount =0;
         for (Chromosome chromosome : pop) {
+            //targetCount++;
             sum+=chromosome.getScore();
             // 轮盘赌选中
-            if (sum>slice) return chromosome;
+            if (sum>slice) {
+                //System.out.println("当前命中的目标为："+targetCount);
+                return chromosome;
+            }
             //System.out.println("轮盘赌选中个体为:\n"+chromosome);
         }
         return pop.get(pop.size()-1);

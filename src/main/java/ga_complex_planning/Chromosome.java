@@ -249,23 +249,26 @@ public class Chromosome {
         // 1、找出所有合理变异对，然后选择
         // 2、随机选择变异对，然后判断是否合理
         // 这里选择第二种，因为其命中概率不低，不会造成太高的迭代
-        int left = r.nextInt(geneSize - 2) + 1;
-        int right = r.nextInt(geneSize - 2) + 1;
-        // 防止出现过高迭代，导致阻塞
-        int maxIterNum = 400;
-        while (!isSwapPairLegal(left,right) && maxIterNum>=0) {
-            left = r.nextInt(geneSize - 2) + 1;
-            right = r.nextInt(geneSize - 2) + 1;
-            maxIterNum--;
-            if (maxIterNum<0) {
-                left=0;
-                right=0;
+
+        for (int i = 0; i < mutationPairNum; i++) {
+            int left = r.nextInt(geneSize - 2) + 1;
+            int right = r.nextInt(geneSize - 2) + 1;
+            // 防止出现过高迭代，导致阻塞
+            int maxIterNum = 400;
+            while (!isSwapPairLegal(left,right) && maxIterNum>=0) {
+                left = r.nextInt(geneSize - 2) + 1;
+                right = r.nextInt(geneSize - 2) + 1;
+                maxIterNum--;
+                if (maxIterNum<0) {
+                    left=0;
+                    right=0;
+                }
             }
+            // 交换目标基因
+            int tmp = gene[left];
+            gene[left] = gene[right];
+            gene[right]=tmp;
         }
-        // 交换目标基因
-        int tmp = gene[left];
-        gene[left] = gene[right];
-        gene[right]=tmp;
     }
 
     /**
