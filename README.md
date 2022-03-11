@@ -1082,11 +1082,3 @@ public class Point {
 }
 ```
 
-
-
-## 五、代码路径
-
-代码我都放在 github 上，又需要的同学可以自取
-
-https://github.com/wcgzgj/ga-PathPlanning/tree/main/src/main/java/ga_complex_planning
-
