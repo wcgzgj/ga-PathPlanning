@@ -23,6 +23,8 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
     private Map<Double,Double> worstScoreDataMap = new HashMap<>();
     private Map<Double,Double> totalScoreDataMap = new HashMap<>();
 
+    public static int underZeroCount = 0;
+
     private static final Random r = new Random();
 
     // 当且仅当 GeneticAlgorithm 对象被实例化后，下面这段静态代码块才会执行
@@ -94,6 +96,7 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
      * @return 执行结束后最佳的种群基因
      */
     public int[] conductGA() {
+        long startTime = System.currentTimeMillis();
         init();
         for (int i = 0; i < ITER_NUM; i++) {
             // 1、计算种群适应度
@@ -109,6 +112,11 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
             // 3、种群变异
             mutation();
         }
+        long endTime = System.currentTimeMillis();
+        System.out.println("==============================");
+        System.out.println("出现负值结果个数为："+GeneticAlgorithm.underZeroCount);
+        System.out.println("平均每次迭代出现负值的个数为:"+GeneticAlgorithm.underZeroCount/500);
+        System.out.println("运算耗时为："+(endTime-startTime)+"ms");
         Map[] bestWorstDataSet = new Map[2];
         Map[] totalDataSet = new Map[1];
         bestWorstDataSet[0]=bestScoreDataMap;
@@ -210,7 +218,7 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
             double carCurrCapacity = CAR_CAPACITY;
             // 记录当前车辆已经使用的时间（方便与时间窗进行对比）
             double currCarTotalTime=0;
-            // 紧急程度权值起算起点
+            // 紧急程度权值计算起点
             int emergencyStart = POINT_NUM;
             for (int i = 0; i < slice.size() - 1; i++) {
                 // 获取起始点和终点信息
@@ -237,8 +245,14 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
                 // 减去当前受灾点消耗掉的货物
                 carCurrCapacity-=endPoint.getNeed();
                 // 3、计算车辆紧急程度权值
-                scoreCount+=endPoint.getEmergency()*emergencyStart--*EMERGENCY_WEIGHT;
+                int timeCore = emergencyStart * emergencyStart; // 扩大紧急程度对对总分数的影响
+                scoreCount+=endPoint.getEmergency()*timeCore*EMERGENCY_WEIGHT;
+                emergencyStart--;
             }
+        }
+        // 统计出现负值分数的个数
+        if (scoreCount<0) {
+            underZeroCount++;
         }
         // 如果适应度分数为0，要做补偿
         scoreCount+=ORIGIN_SCORE;

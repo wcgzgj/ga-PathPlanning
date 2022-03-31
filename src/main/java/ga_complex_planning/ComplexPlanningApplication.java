@@ -13,5 +13,6 @@ public class ComplexPlanningApplication {
         //Map<String, Point> info = Info.getInfo();
         GeneticAlgorithm ga = new GeneticAlgorithm();
         ga.conductGA();
+
     }
 }
