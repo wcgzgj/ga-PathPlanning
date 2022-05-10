@@ -101,12 +101,7 @@ public class GeneticAlgorithm extends Codec implements RouteCalculator {
         for (int i = 0; i < ITER_NUM; i++) {
             // 1、计算种群适应度
             calculatePopScore();
-            //GAGraphUtil.drawCurrentPopScoreDistributeGraph(pop,iterCount);
             print(i+1);
-            //System.out.println("当前种群为:");
-            //for (Chromosome chromosome : pop) {
-            //    System.out.println(chromosome);
-            //}
             // 2、交叉生成新的种群
             evolve();
             // 3、种群变异
